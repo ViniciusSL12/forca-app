@@ -1,95 +1,80 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+'use client';
+import { useState, useEffect } from 'react';
+import HangmanSVG from './components/HangmanSVG';
+import Keyboard from './components/Keyboard';
+import WordReveal from './components/WordReveal';
+import HistoryPanel from './components/HistoryPanel';
+import { getRandomWord, alphabet, maxErrors } from '../utils/gameConfig';
 
 export default function Home() {
-  return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol>
-          <li>
-            Get started by editing <code>app/page.tsx</code>.
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+  const [secretWord, setSecretWord] = useState<string>('');
+  const [guessedLetters, setGuessedLetters] = useState<string[]>([]);
+  const [wrongLetters, setWrongLetters] = useState<string[]>([]);
+  const [attemptsLeft, setAttemptsLeft] = useState<number>(maxErrors);
+  const [status, setStatus] = useState<'playing' | 'won' | 'lost'>('playing');
 
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+  useEffect(() => {
+    startNewGame();
+  }, []);
+
+  function startNewGame() {
+    setSecretWord(getRandomWord());
+    setGuessedLetters([]);
+    setWrongLetters([]);
+    setAttemptsLeft(maxErrors);
+    setStatus('playing');
+  }
+
+  function handleGuess(letter: string) {
+    if (status !== 'playing') return;
+    if (guessedLetters.includes(letter) || wrongLetters.includes(letter)) return;
+
+    if (secretWord.includes(letter)) {
+      const newGuessed = [...guessedLetters, letter];
+      setGuessedLetters(newGuessed);
+      if (secretWord.split('').every(l => newGuessed.includes(l))) setStatus('won');
+    } else {
+      setWrongLetters(prev => [...prev, letter]);
+      setAttemptsLeft(prev => {
+        const next = prev - 1;
+        if (next <= 0) setStatus('lost');
+        return next;
+      });
+    }
+  }
+
+  return (
+    <main className="min-h-screen bg-gradient-to-b from-blue-50 to-blue-100 flex flex-col items-center p-6">
+      <h1 className="text-5xl font-extrabold text-blue-800 mb-6 drop-shadow-lg">Jogo da Forca</h1>
+
+      <HangmanSVG errors={maxErrors - attemptsLeft} />
+
+      <WordReveal word={secretWord} guessed={guessedLetters} />
+
+      <Keyboard
+        alphabet={alphabet}
+        guessed={guessedLetters}
+        wrong={wrongLetters}
+        onGuess={handleGuess}
+        disabled={status !== 'playing'}
+      />
+
+      <HistoryPanel correct={guessedLetters} wrong={wrongLetters} attemptsLeft={attemptsLeft} />
+
+      {status !== 'playing' && (
+        <div className="mt-6 text-center animate-fadeIn">
+          {status === 'won' && <p className="text-green-600 text-2xl font-bold mb-2">Parabéns! Você venceu!</p>}
+          {status === 'lost' && <p className="text-red-600 text-2xl font-bold mb-2">Você perdeu. A palavra era <strong>{secretWord}</strong>.</p>}
+          <button
+            className="mt-4 bg-blue-600 text-white px-6 py-2 rounded-full shadow-lg hover:bg-blue-700 transition-colors"
+            onClick={startNewGame}
           >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.secondary}
-          >
-            Read our docs
-          </a>
+            Reiniciar
+          </button>
         </div>
-      </main>
-      <footer className={styles.footer}>
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+      )}
+    </main>
   );
 }
+
+
