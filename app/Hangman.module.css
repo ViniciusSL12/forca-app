@@ -1,0 +1,182 @@
+.container {
+  max-width: 480px;
+  margin: 0 auto;
+  background: #fff;
+  padding: 32px 24px;
+  border-radius: 12px;
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #222;
+  user-select: none;
+}
+
+.title {
+  font-size: 2.75rem;
+  font-weight: 700;
+  color: #1e40af;
+  text-align: center;
+  margin-bottom: 24px;
+  text-shadow: 0 1px 4px rgba(30, 64, 175, 0.3);
+}
+
+.hangmanSVG {
+  display: block;
+  margin: 0 auto 32px auto;
+  stroke: #1e40af;
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.05));
+  transition: stroke 0.3s ease;
+}
+
+.wordReveal {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 2.8rem;
+  letter-spacing: 0.14em;
+  margin-bottom: 36px;
+}
+
+.letterBox {
+  width: 48px;
+  border-bottom: 4px solid #1e40af;
+  text-align: center;
+  transition: color 0.4s ease;
+  color: #1e40af;
+}
+
+.letterBox.hidden {
+  color: transparent;
+  text-shadow: 0 0 8px #a5b4fc;
+}
+
+.keyboard {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  max-width: 400px;
+  margin: 0 auto 36px auto;
+}
+
+.keyButton {
+  width: 42px;
+  height: 42px;
+  border: none;
+  border-radius: 8px;
+  background-color: #e0e7ff;
+  color: #1e40af;
+  font-weight: 700;
+  font-size: 1.1rem;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgb(88 99 248 / 0.15);
+  transition: background-color 0.3s ease, color 0.3s ease, transform 0.15s ease;
+  user-select: none;
+}
+
+.keyButton:hover:not(:disabled) {
+  background-color: #3b82f6;
+  color: white;
+  transform: translateY(-2px);
+}
+
+.keyButton:disabled {
+  background-color: #a5b4fc;
+  color: #c7d2fe;
+  cursor: default;
+  box-shadow: none;
+  transform: none;
+}
+
+.historyPanel {
+  text-align: center;
+  font-size: 1rem;
+  color: #475569;
+  margin-bottom: 36px;
+}
+
+.historyPanel strong {
+  color: #1e40af;
+}
+
+.historyPanel p {
+  margin: 8px 0;
+}
+
+.correctLetter {
+  display: inline-block;
+  background-color: #bbf7d0;
+  color: #166534;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  margin: 0 4px 4px 0;
+  font-weight: 600;
+  box-shadow: 0 2px 6px rgb(22 101 52 / 0.15);
+}
+
+.wrongLetter {
+  display: inline-block;
+  background-color: #fecaca;
+  color: #991b1b;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  margin: 0 4px 4px 0;
+  font-weight: 600;
+  box-shadow: 0 2px 6px rgb(153 27 27 / 0.15);
+}
+
+.statusMessage {
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 24px;
+}
+
+.statusMessage.win {
+  color: #22c55e;
+  text-shadow: 0 1px 5px rgb(34 197 94 / 0.5);
+}
+
+.statusMessage.lose {
+  color: #ef4444;
+  text-shadow: 0 1px 5px rgb(239 68 68 / 0.5);
+}
+
+.restartButton {
+  display: block;
+  margin: 0 auto;
+  background-color: #2563eb;
+  color: white;
+  border: none;
+  padding: 12px 28px;
+  border-radius: 28px;
+  font-weight: 700;
+  font-size: 1.1rem;
+  cursor: pointer;
+  box-shadow: 0 8px 15px rgb(37 99 235 / 0.4);
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  user-select: none;
+}
+
+.restartButton:hover {
+  background-color: #1d4ed8;
+  box-shadow: 0 12px 20px rgb(29 78 216 / 0.6);
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 24px 16px;
+  }
+  
+  .wordReveal {
+    font-size: 2.2rem;
+    gap: 8px;
+  }
+
+  .keyButton {
+    width: 36px;
+    height: 36px;
+    font-size: 1rem;
+  }
+}
+

@@ -1,10 +1,15 @@
 interface Props {
   errors: number;
+  className?: string;  // Recebe a classe externa
 }
 
-export default function HangmanSVG({ errors }: Props) {
+export default function HangmanSVG({ errors, className }: Props) {
   return (
-    <svg width="200" height="250" className="mb-6 stroke-gray-800 drop-shadow-md">
+    <svg
+      width="200"
+      height="250"
+      className={`${className ?? ''} mb-6 stroke-gray-800 drop-shadow-md`}
+    >
       <line x1="20" y1="230" x2="180" y2="230" strokeWidth="4" />
       <line x1="60" y1="230" x2="60" y2="20" strokeWidth="4" />
       <line x1="60" y1="20" x2="140" y2="20" strokeWidth="4" />
@@ -18,4 +23,5 @@ export default function HangmanSVG({ errors }: Props) {
     </svg>
   );
 }
+
 

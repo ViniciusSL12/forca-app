@@ -1,15 +1,24 @@
 interface Props {
   word: string;
   guessed: string[];
+  className?: string;
+  letterClassName?: string;
+  hiddenLetterClassName?: string;
 }
 
-export default function WordReveal({ word, guessed }: Props) {
+export default function WordReveal({
+  word,
+  guessed,
+  className,
+  letterClassName,
+  hiddenLetterClassName,
+}: Props) {
   return (
-    <div className="flex justify-center space-x-3 mb-6 text-3xl font-mono">
+    <div className={className}>
       {word.split('').map((letter, i) => (
         <span
           key={i}
-          className="border-b-4 border-blue-700 w-8 text-center transition-all duration-300"
+          className={`${letterClassName ?? ''} ${guessed.includes(letter) ? '' : hiddenLetterClassName ?? ''}`}
         >
           {guessed.includes(letter) ? letter : '_'}
         </span>

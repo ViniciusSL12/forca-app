@@ -1,16 +1,21 @@
 'use client';
+
 import { useState, useEffect } from 'react';
 import HangmanSVG from './components/HangmanSVG';
-import Keyboard from './components/Keyboard';
 import WordReveal from './components/WordReveal';
+import Keyboard from './components/Keyboard';
 import HistoryPanel from './components/HistoryPanel';
+
+import styles from './Hangman.module.css';
+
 import { getRandomWord, alphabet, maxErrors } from '../utils/gameConfig';
 
-export default function Home() {
-  const [secretWord, setSecretWord] = useState<string>('');
+export default function Page() {
+  // States que faltavam
+  const [secretWord, setSecretWord] = useState('');
   const [guessedLetters, setGuessedLetters] = useState<string[]>([]);
   const [wrongLetters, setWrongLetters] = useState<string[]>([]);
-  const [attemptsLeft, setAttemptsLeft] = useState<number>(maxErrors);
+  const [attemptsLeft, setAttemptsLeft] = useState(maxErrors);
   const [status, setStatus] = useState<'playing' | 'won' | 'lost'>('playing');
 
   useEffect(() => {
@@ -18,7 +23,8 @@ export default function Home() {
   }, []);
 
   function startNewGame() {
-    setSecretWord(getRandomWord());
+    const word = getRandomWord();
+    setSecretWord(word);
     setGuessedLetters([]);
     setWrongLetters([]);
     setAttemptsLeft(maxErrors);
@@ -32,22 +38,24 @@ export default function Home() {
     if (secretWord.includes(letter)) {
       const newGuessed = [...guessedLetters, letter];
       setGuessedLetters(newGuessed);
-      if (secretWord.split('').every(l => newGuessed.includes(l))) setStatus('won');
+      if (secretWord.split('').every(l => newGuessed.includes(l))) {
+        setStatus('won');
+      }
     } else {
-      setWrongLetters(prev => [...prev, letter]);
-      setAttemptsLeft(prev => {
-        const next = prev - 1;
-        if (next <= 0) setStatus('lost');
-        return next;
-      });
+      setWrongLetters([...wrongLetters, letter]);
+      const newAttemptsLeft = attemptsLeft - 1;
+      setAttemptsLeft(newAttemptsLeft);
+      if (newAttemptsLeft <= 0) {
+        setStatus('lost');
+      }
     }
   }
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-blue-50 to-blue-100 flex flex-col items-center p-6">
-      <h1 className="text-5xl font-extrabold text-blue-800 mb-6 drop-shadow-lg">Jogo da Forca</h1>
+    <main className={styles.container}>
+      <h1 className={styles.title}>Jogo da Forca</h1>
 
-      <HangmanSVG errors={maxErrors - attemptsLeft} />
+      <HangmanSVG errors={maxErrors - attemptsLeft} className={styles.hangmanSVG} />
 
       <WordReveal word={secretWord} guessed={guessedLetters} />
 
@@ -62,13 +70,14 @@ export default function Home() {
       <HistoryPanel correct={guessedLetters} wrong={wrongLetters} attemptsLeft={attemptsLeft} />
 
       {status !== 'playing' && (
-        <div className="mt-6 text-center animate-fadeIn">
-          {status === 'won' && <p className="text-green-600 text-2xl font-bold mb-2">Parabéns! Você venceu!</p>}
-          {status === 'lost' && <p className="text-red-600 text-2xl font-bold mb-2">Você perdeu. A palavra era <strong>{secretWord}</strong>.</p>}
-          <button
-            className="mt-4 bg-blue-600 text-white px-6 py-2 rounded-full shadow-lg hover:bg-blue-700 transition-colors"
-            onClick={startNewGame}
-          >
+        <div className={styles.statusContainer}>
+          {status === 'won' && <p className={styles.winMessage}>Parabéns! Você venceu!</p>}
+          {status === 'lost' && (
+            <p className={styles.loseMessage}>
+              Você perdeu. A palavra era <strong>{secretWord}</strong>.
+            </p>
+          )}
+          <button className={styles.restartButton} onClick={startNewGame}>
             Reiniciar
           </button>
         </div>
@@ -76,5 +85,9 @@ export default function Home() {
     </main>
   );
 }
+
+
+
+
 
 

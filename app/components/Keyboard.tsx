@@ -4,22 +4,39 @@ interface Props {
   wrong: string[];
   onGuess: (letter: string) => void;
   disabled: boolean;
+  className?: string;
+  buttonClassName?: string;
+  guessedClassName?: string;
+  wrongClassName?: string;
 }
 
-export default function Keyboard({ alphabet, guessed, wrong, onGuess, disabled }: Props) {
+export default function Keyboard({
+  alphabet,
+  guessed,
+  wrong,
+  onGuess,
+  disabled,
+  className,
+  buttonClassName,
+  guessedClassName,
+  wrongClassName,
+}: Props) {
   return (
-    <div className="flex flex-wrap justify-center max-w-md mt-4">
+    <div className={className}>
       {alphabet.map(letter => {
         const tried = guessed.includes(letter) || wrong.includes(letter);
+        let buttonClasses = buttonClassName ?? '';
+
+        if (guessed.includes(letter)) buttonClasses += ` ${guessedClassName ?? ''}`;
+        if (wrong.includes(letter)) buttonClasses += ` ${wrongClassName ?? ''}`;
+        if (!tried) buttonClasses += ' hover:bg-gray-200 transition-colors';
+
         return (
           <button
             key={letter}
             onClick={() => onGuess(letter)}
             disabled={disabled || tried}
-            className={`m-1 w-10 h-10 rounded-lg font-bold shadow-md
-              ${guessed.includes(letter) ? 'bg-green-400 text-white' : ''}
-              ${wrong.includes(letter) ? 'bg-red-400 text-white' : ''}
-              ${!tried ? 'bg-white hover:bg-gray-200' : ''} transition-colors`}
+            className={buttonClasses.trim()}
           >
             {letter}
           </button>
@@ -28,3 +45,5 @@ export default function Keyboard({ alphabet, guessed, wrong, onGuess, disabled }
     </div>
   );
 }
+
+
